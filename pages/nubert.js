@@ -4,6 +4,7 @@ console.log("Test: ▓▓▓▓▓");
 console.log("Test: ▒▒▒▒▒");
 console.log("Test: ░░░░░");
 const lines = document.querySelector("#lines");
+const resetButton = document.querySelector("#resetButton");
 const cornerWidget = document.querySelector("#corner-widget");
 const cornerWidget2 = document.querySelector("#corner-widget2");
 const cornerWidget3 = document.querySelector("#corner-widget3");
@@ -57,6 +58,7 @@ function resetScores() {
 	saveScores();
 }
 window.resetScores = resetScores;
+resetButton.addEventListener("click", resetScores);
 
 function addLines(amount) {
 	for (let index = 0; index < amount; index += 1) {
