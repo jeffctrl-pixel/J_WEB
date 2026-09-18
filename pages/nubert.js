@@ -18,6 +18,37 @@ const sections = ["▓░░░░░░░░░░░░░░░░░░░�
 const debug = false; //Has to be manually set through the code.
 let wordsFound = 0;
 let wordClicks = 0;
+const saveKey = "nubert-save-v1";
+
+function updateWidgets() {
+	cornerWidget.innerHTML = `Lines scrolled: ${lineNumber}.`;
+	cornerWidget2.innerHTML = `Words found: ${wordsFound}.`;
+	cornerWidget3.innerHTML = `Words collected: ${wordClicks}.`;
+}
+
+function saveScores() {
+	localStorage.setItem(saveKey, JSON.stringify({
+		linesScrolled: lineNumber,
+		wordsFound,
+		wordsCollected: wordClicks,
+		updatedAt: Date.now()
+	}));
+}
+
+function loadScores() {
+	try {
+		const save = JSON.parse(localStorage.getItem(saveKey));
+		if (!save) {
+			return;
+		}
+
+		lineNumber = Number(save.linesScrolled) || 0;
+		wordsFound = Number(save.wordsFound) || 0;
+		wordClicks = Number(save.wordsCollected) || 0;
+	} catch {
+		localStorage.removeItem(saveKey);
+	}
+}
 
 function addLines(amount) {
 	for (let index = 0; index < amount; index += 1) {
@@ -32,6 +63,8 @@ function addLines(amount) {
 			addRandomOverlay(line);
 		}
 	}
+
+	saveScores();
 }
 
 function addRandomOverlay(line) {
@@ -40,7 +73,8 @@ function addRandomOverlay(line) {
 	const overlay = createOverlay(text, 0, y);
 	positionRandomOverlay(overlay);
 	wordsFound++;
-	cornerWidget2.innerHTML = `Words found: ${wordsFound}.`;
+	updateWidgets();
+	saveScores();
 }
 
 function getHorizontalBands(overlay) {
@@ -76,7 +110,8 @@ function addLinesAtBottom() {
 	if (nearBottom) {
 		addLines(10);
 	}
-	cornerWidget.innerHTML = `Lines scrolled: ${lineNumber}.`;
+	updateWidgets();
+	saveScores();
 }
 
 function createOverlay(text, x, y) {
@@ -98,7 +133,8 @@ function clickOverlay(overlay) {
 		console.log("Clicked overlay:", overlay);
 	}
 	wordClicks++;
-	cornerWidget3.innerHTML = `Words collected: ${wordClicks}.`;
+	updateWidgets();
+	saveScores();
 	destroyOverlay(overlay);
 }
 
@@ -130,5 +166,7 @@ if (debug) {
 	calibrateOverlays();
 }
 
+loadScores();
+updateWidgets();
 addLines(40);
 window.addEventListener("scroll", addLinesAtBottom);
