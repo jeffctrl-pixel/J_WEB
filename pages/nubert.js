@@ -50,6 +50,14 @@ function loadScores() {
 	}
 }
 
+function resetScores() {
+	lineNumber = 0;
+	wordsFound = 0;
+	wordClicks = 0;
+	saveScores();
+}
+window.resetScores = resetScores;
+
 function addLines(amount) {
 	for (let index = 0; index < amount; index += 1) {
 		lineNumber += 1;
